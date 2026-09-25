@@ -1,0 +1,459 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Visit Clinic Package Finder</title><style>body{font-family:Arial,sans-serif;background:#f5f7fb;margin:0;color:#1f2937}.wrap{max-width:950px;margin:auto;padding:30px 18px}.box,.card{background:#fff;border-radius:14px;padding:22px;margin-bottom:16px;box-shadow:0 3px 14px #0000000d}h1{margin:0 0 8px}textarea{width:100%;min-height:100px;padding:12px;border:1px solid #ccc;border-radius:9px;font-size:16px;box-sizing:border-box}button{margin-top:10px;padding:11px 18px;border:0;border-radius:8px;cursor:pointer;font-weight:bold}.go{background:#2563eb;color:#fff}.clear{background:#e5e7eb}.title{display:flex;justify-content:space-between;gap:15px}.pct{font-weight:bold;color:#2563eb}.muted{color:#6b7280;font-size:13px}.section{font-weight:bold;margin-top:14px}li{margin:5px 0}.empty{text-align:center;color:#6b7280}
+.gender-box{margin:16px 0}.gender-box label{display:block;font-weight:bold;margin-bottom:7px}
+.gender-box select{width:100%;padding:11px;border:1px solid #ccc;border-radius:9px;font-size:15px;background:#fff}
+</style></head><body><div class="wrap"><div class="box"><h1>Visit Clinic Package Finder</h1><p class="muted">Enter tests separated by commas to find the 4 closest package matches.</p>
+<div class="gender-box">
+  <label for="gender">Biological gender</label>
+  <select id="gender">
+    <option value="female">Female</option>
+    <option value="male">Male</option>
+    <option value="both">Show both</option>
+  </select>
+  <div class="muted">Female/Male searches include packages with that gender in the name plus packages with no gender mentioned.</div>
+</div>
+<textarea id="tests" placeholder="Example: CBC, ECG, LFT, Vitamin D"></textarea><br><button class="go" onclick="findPackages()">Find Packages</button> <button class="clear" onclick="clearAll()">Clear</button></div><div id="results"></div></div><script>const packages={
+  "Full Body Wellness Checkup (Female)": [
+    "Complete Blood Count (CBC)",
+    "Vitamin B12",
+    "Iron Studies",
+    "Ferritin",
+    "Blood Sugar Glucose - Fasting",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test (LFT)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "C-Reactive Protein (CRP)",
+    "Lipid Profile",
+    "Calcium - Total",
+    "Vitamin D3 (25 Hydroxy)",
+    "Vitamin D2",
+    "Rheumatoid Factor (RA test)",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "CA125 - Ovarian Cancer Marker",
+    "Creatinine",
+    "Estimated Glomerular Filtration Rate (eGFR) Test",
+    "Urea",
+    "Blood Urea Nitrogen (BUN)",
+    "Uric Acid",
+    "Serum Phosphorous",
+    "Electrolyte Panel (Sodium, Potassium, Chloride)"
+  ],
+  "Full Body Wellness Checkup (Male)": [
+    "Complete Blood Count (CBC)",
+    "Vitamin B12",
+    "Iron Studies",
+    "Ferritin",
+    "Blood Sugar Glucose - Fasting",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test(LFT)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "C-Reactive Protein (CRP)",
+    "Lipid Profile",
+    "Calcium- Total",
+    "Vitamin D3 (25 Hydroxy)",
+    "VITAMIN D2",
+    "Rheumatoid Factor (RA test)",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "Prostrate Specific Antigen",
+    "Testosterone - Total",
+    "Testosterone - Free",
+    "Creatinine",
+    "Blood Urea Nitrogen (BUN)",
+    "Uric Acid",
+    "Urea",
+    "Estimated Glomerular Filtration Rate (eGFR) Test",
+    "Serum Phosphorous",
+    "Electrolyte Panel( Sodium, Potassium, Chloride)"
+  ],
+  "Complete Wellness (Female)": [
+    "Complete Blood Count (CBC)",
+    "Vitamin B12",
+    "Iron Studies",
+    "Ferritin",
+    "Blood Sugar Glucose - Fasting",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test (LFT)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "C-Reactive Protein (CRP)",
+    "Lipid Profile",
+    "Calcium - Total",
+    "Vitamin D3 (25 Hydroxy)",
+    "Vitamin D2",
+    "Rheumatoid Factor (RA test)",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "CA125 - Ovarian Cancer Marker",
+    "Amylase- Seum",
+    "Lipase",
+    "Magnesium",
+    "Creatinine",
+    "Estimated Glomerular Filtration Rate (eGFR) Test",
+    "Urea",
+    "Blood Urea Nitrogen (BUN)",
+    "Serum Phosphorous",
+    "Electrolyte Panel (Sodium, Potassium, Chloride)"
+  ],
+  "Complete Wellness (Male)": [
+    "Complete Blood Count (CBC)",
+    "Vitamin B12",
+    "Iron Studies",
+    "Ferritin",
+    "Blood Sugar Glucose - Fasting",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test(LFT)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "C-Reactive Protein (CRP)",
+    "Lipid Profile",
+    "Calcium- Total",
+    "Vitamin D3 (25 Hydroxy)",
+    "VITAMIN D2",
+    "Rheumatoid Factor (RA test)",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "Prostrate Specific Antigen",
+    "Testosterone - Total",
+    "Testosterone - Free",
+    "Creatinine",
+    "Blood Urea Nitrogen (BUN)",
+    "Uric Acid",
+    "Urea",
+    "Estimated Glomerular Filtration Rate (eGFR) Test",
+    "Serum Phosphorous",
+    "Electrolyte Panel( Sodium, Potassium, Chloride)"
+  ],
+  "Full Body Essential Pack": [
+    "Blood Sugar Glucose - Fasting",
+    "Calcium - Total",
+    "Complete Blood Count (CBC)",
+    "Complete Urine Analysis (RUA)",
+    "Electrolyte Panel (Sodium, Potassium, Chloride)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Kidney Function Test Basic (KFT) (BUN, BUN/Creatinine Ratio, Urea, Creatinine, Uric Acid)",
+    "Lipid Profile",
+    "Liver Function Test (LFT)",
+    "Serum Phosphorous",
+    "Thyroid Stimulation Harmone (TSH)",
+    "Vitamin B12",
+    "Vitamin D3 (25 Hydroxy)"
+  ],
+  "Fever Care": [
+    "Complete Blood Count (CBC)",
+    "Widal Test ( Slide Test)",
+    "Dengue IgG",
+    "Dengue IgM",
+    "Dengue NS 1Antigen",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "Malarial Antigen",
+    "C-Reactive Protein (CRP)"
+  ],
+  "Vitamin Profile": [
+    "Vitamin B12",
+    "Vitamin D3 (25 Hydroxy)",
+    "Thyroid Profile (T3, t4 & TSH)",
+    "Calcium - Total"
+  ],
+  "Diabetes & Heart Care": [
+    "Estimated Average Glucose (eAG)",
+    "Blood Sugar Glucose - Fasting",
+    "Microalbumin",
+    "Complete Blood Count (CBC)",
+    "Complete Urine Analysis (RUA)",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Kidney Function Test Basic (KFT) (BUN, BUN/Creatinine Ratio, Urea, Creatinine, Uric Acid)",
+    "Liver Function Test (LFT)",
+    "Lipid Profile",
+    "High Sensitive CRP (hsCRP)"
+  ],
+  "Essential Care (Female)": [
+    "Complete Blood Count (CBC)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "Blood Sugar Glucose - Fasting",
+    "Glucose - Post Prandial (PP)",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test (LFT)",
+    "Kidney Function Test Basic (KFT) (BUN, BUN/Creatinine Ratio, Urea, Creatinine, Uric Acid)",
+    "Lipid Profile",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "Complete Urine Analysis (RUA)",
+    "Vaginal Paps Smear",
+    "Xray Chest PA View",
+    "Ultrasound Whole Abdomen",
+    "ECG",
+    "Physician Consultation",
+    "Dental Consultation",
+    "Dietician Consultation",
+    "Physiotherapy"
+  ],
+  "Essential Care (Male)": [
+    "physiotherapy",
+    "Haemogram (CBC + ESR) With P/S",
+    "Blood Sugar Glucose - Fasting",
+    "Glucose - Post Prandial (PP)",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test(LFT)",
+    "Kidney Function Test Basic (KFT)(BUN, BUN/Creatinine Ratio, Urea, Creatinine, Uric Acid)",
+    "Lipid Profile",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "Complete Urine Routine Analysis (RUA)",
+    "X Ray Chest PA View",
+    "Ultrasound Whole Abdomen",
+    "ECG",
+    "Physician Consultation",
+    "Dental Consultation",
+    "Dietician consultation"
+  ],
+  "Early Detect (Female)": [
+    "Complete Blood Count (CBC)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "Carcino Embryonic Antigen (CEA)",
+    "Alpha Feto Protein (AFP)",
+    "Alkaline Phosphatase (ALP)",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "CA19.9 - Pancreatic Cancer Marker",
+    "CA125 - Ovarian Cancer Marker",
+    "Vaginal Paps Smear",
+    "Xray Chest PA View",
+    "Mammography/Sono-Mammography",
+    "Ultrasound Whole Abdomen",
+    "Physician Consultation",
+    "Dental Consultation",
+    "Dietician Consultation",
+    "Ultrasound Neck",
+    "Cytology - Fluids",
+    "Gynaecologist Consultation",
+    "Physiotherapy",
+    "Oncologist Consultation"
+  ],
+  "Early Detact (Male)": [
+    "Haemogram (CBC + ESR) With P/S",
+    "Carcino Embryonic Antigen (CEA)",
+    "Alpha Feto Protein (AFP)",
+    "Alkaline Phosphatase (ALP)",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "X Ray Chest PA View",
+    "Ultrasound Whole Abdomen and Pelvis",
+    "Physician Consultation",
+    "Dental Consultation",
+    "Dietician consultation",
+    "Cytology -Fluids",
+    "physiotherapy",
+    "Oncologist Consultation",
+    "Gynaecologist Consultation"
+  ],
+  "Platinum Checkup (Female)": [
+    "Complete Blood Count (CBC)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "Blood Sugar Glucose - Fasting",
+    "Glucose - Post Prandial (PP)",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test (LFT)",
+    "Kidney Function Test Basic (KFT) (BUN, BUN/Creatinine Ratio, Urea, Creatinine, Uric Acid)",
+    "Lipid Profile",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "Complete Urine Analysis (RUA)",
+    "Vaginal Paps Smear",
+    "C-Reactive Protein (CRP)",
+    "Lipoprotein a (LP-a)",
+    "Electrolyte Panel (Sodium, Potassium, Chloride)",
+    "RA Factor Test (Quantitative)",
+    "Iron Studies",
+    "Ferritin",
+    "Absolute Eosinophil Count",
+    "Vitamin B12",
+    "Vitamin D3 (25 Hydroxy)",
+    "Xray Chest PA View",
+    "Ultrasound Whole Abdomen",
+    "Mammography/Sono-Mammography",
+    "ECHO",
+    "TMT Test",
+    "PFT (Pulmonary Function Test)",
+    "Physician Consultation",
+    "Dental Consultation",
+    "Dietician Consultation",
+    "Orthopedic Opinion",
+    "Cardiologist Consultant",
+    "Gynaecologist Consultation",
+    "Physiotherapy"
+  ],
+  "Platinum Checkup (Male)": [
+    "Complete Blood Count (CBC)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "Blood Sugar Glucose - Fasting",
+    "Glucose - Post Prandial (PP)",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test(LFT)",
+    "Kidney Function Test Basic (KFT)(BUN, BUN/Creatinine Ratio, Urea, Creatinine, Uric Acid)",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "Lipid Profile",
+    "Complete Urine Routine Analysis (RUA)",
+    "C-Reactive Protein (CRP)",
+    "Lipoprotein a (Lp-a)",
+    "Electrolyte Panel( Sodium, Potassium, Chloride)",
+    "RA factor test (Quantitative)",
+    "Iron Studies",
+    "Ferritin",
+    "Absolute Eosinophil Count",
+    "Prostate Specific Antigen - PSA (Total)",
+    "Vitamin B12",
+    "Vitamin D3 (25 Hydroxy)",
+    "X Ray Chest PA View",
+    "Ultrasound Whole Abdomen",
+    "ECG",
+    "ECHO",
+    "TMT Test",
+    "PFT ( Pulmonary Function Test )",
+    "Physician Consultation",
+    "Dental Consultation",
+    "Dietician consultation",
+    "Cardiologist Consultation",
+    "orthopedic opinion",
+    "physiotherapy",
+    "Gynaecologist Consultation"
+  ],
+  "Sugar Shield": [
+    "Complete Blood Count (CBC)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "Blood Sugar Glucose - Fasting",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test (LFT)",
+    "Kidney Function Test Basic (KFT) (BUN, BUN/Creatinine Ratio, Urea, Creatinine, Uric Acid)",
+    "Complete Urine Analysis (RUA)",
+    "Electrolyte Panel (Sodium, Potassium, Chloride)",
+    "Spot Microalbumin",
+    "Xray Chest PA View",
+    "Ultrasound Whole Abdomen",
+    "ECG",
+    "Physician Consultation",
+    "Dental Consultation",
+    "Dietician Consultation",
+    "Endocrinologist Consultation",
+    "Physiotherapy"
+  ],
+  "Senior Citizen (Female)": [
+    "Complete Blood Count (CBC)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "Blood Sugar Glucose - Fasting",
+    "Glucose - Post Prandial (PP)",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test (LFT)",
+    "Kidney Function Test Basic (KFT) (BUN, BUN/Creatinine Ratio, Urea, Creatinine, Uric Acid)",
+    "Complete Urine Analysis (RUA)",
+    "RA Factor Test (Quantitative)",
+    "Vitamin B12",
+    "Vitamin D3 (25 Hydroxy)",
+    "Ultrasound Whole Abdomen",
+    "Mammography/Sono-Mammography",
+    "X Ray Both Knees AP & Lateral View",
+    "ECG",
+    "ECHO",
+    "Physician Consultation",
+    "Dental Consultation",
+    "Dietician Consultation",
+    "CA125 - Ovarian Cancer Marker",
+    "Physiotherapy",
+    "Gynaecologist Consultation",
+    "Orthopedic Opinion"
+  ],
+  "Senior Citizen (Male)": [
+    "Complete Urine Routine Analysis (RUA)",
+    "Complete Blood Count (CBC)",
+    "Erythrocyte Sedimentation Rate (ESR) (WB-EDTA Blood)",
+    "Blood Sugar Glucose - Fasting",
+    "Glucose - Post Prandial (PP)",
+    "HbA1c (Glycosylated Hemoglobin)",
+    "Liver Function Test(LFT)",
+    "Kidney Function Test Basic (KFT)(BUN, BUN/Creatinine Ratio, Urea, Creatinine, Uric Acid)",
+    "Lipid Profile",
+    "RA factor test (Quantitative)",
+    "Prostate Specific Antigen - PSA (Total)",
+    "Vitamin B12",
+    "Vitamin D3 (25 Hydroxy)",
+    "Ultrasound Whole Abdomen",
+    "X Ray Both Knees AP & Lateral View",
+    "ECG",
+    "ECHO",
+    "Physician Consultation",
+    "Dental Consultation",
+    "Dietician consultation",
+    "orthopedic opinion",
+    "Gynaecologist Consultation"
+  ],
+  "Young Shield": [
+    "Haemogram (CBC + ESR) WIth P/S",
+    "Liver Function Test (LFT)",
+    "Kidney Function Test Basic (KFT) (BUN, BUN/Creatinine Ratio, Urea, Creatinine, Uric Acid)",
+    "Lipid Profile",
+    "Thyroid Profile (T3, T4 & TSH)",
+    "Complete Urine Analysis (RUA)",
+    "Total IgE",
+    "Xray Chest PA View",
+    "Ultrasound Whole Abdomen",
+    "ECG",
+    "Physician Consultation",
+    "Dental Consultation",
+    "Dietician Consultation",
+    "Glucose - Random",
+    "Physiotherapy",
+    "Gynaecologist Consultation"
+  ]
+};
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim()}function match(a,b){a=norm(a);b=norm(b);if(!a||!b)return false;if(b.includes(a))return true;const aliases={cbc:['cbc','complete blood count','haemogram'],lft:['lft','liver function test'],kft:['kft','kidney function test'],ecg:['ecg','electrocardiogram'],hba1c:['hba1c','glycosylated hemoglobin','glycated hemoglobin'],psa:['psa','prostate specific antigen'],esr:['esr','erythrocyte sedimentation rate'],crp:['crp','c reactive protein'],tsh:['tsh','thyroid stimulation hormone']};return (aliases[a]||[]).some(x=>b.includes(norm(x)))}function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}function packageAllowed(name,gender){
+  const n=norm(name);
+  const hasFemale=n.includes('female');
+  const hasMale=n.includes('male');
+
+  if(gender==='both') return true;
+  if(gender==='female') return hasFemale || (!hasFemale && !hasMale);
+  if(gender==='male') return hasMale || (!hasFemale && !hasMale);
+  return true;
+}
+function findPackages(){
+  let raw=document.getElementById('tests').value.trim(),
+      out=document.getElementById('results'),
+      gender=document.getElementById('gender').value;
+
+  if(!raw){
+    out.innerHTML='<div class="box empty">Please enter at least one test.</div>';
+    return;
+  }
+
+  let selected=raw.split(',').map(x=>x.trim()).filter(Boolean),
+      results=[];
+
+  for(let [name,tests] of Object.entries(packages)){
+    if(!packageAllowed(name,gender)) continue;
+
+    let inc=[],exc=[];
+    for(let input of selected){
+      let found=tests.find(t=>match(input,t));
+      found?inc.push(found):exc.push(input);
+    }
+
+    results.push({
+      name:name,
+      inc:inc,
+      exc:exc,
+      pct:inc.length/selected.length*100
+    });
+  }
+
+  results.sort((a,b)=>b.pct-a.pct||b.inc.length-a.inc.length);
+
+  if(!results.length){
+    out.innerHTML='<div class="box empty">No packages are available for the selected gender.</div>';
+    return;
+  }
+
+  out.innerHTML='<h2>Best Package Matches</h2>'+
+    results.slice(0,4).map((r,i)=>`
+      <div class="card">
+        <div class="title">
+          <h2>${i+1}. ${esc(r.name)}</h2>
+          <span class="pct">${r.pct.toFixed(2)}%</span>
+        </div>
+        <div class="muted">${r.inc.length} of ${selected.length} requested tests matched</div>
+        <div class="section">Included tests</div>
+        <ul>${r.inc.length?r.inc.map(x=>`<li>${esc(x)}</li>`).join(''):'<li>None</li>'}</ul>
+        <div class="section">Excluded tests</div>
+        <ul>${r.exc.length?r.exc.map(x=>`<li>${esc(x)}</li>`).join(''):'<li>None</li>'}</ul>
+      </div>`).join('');
+}
+function clearAll(){document.getElementById('tests').value='';document.getElementById('results').innerHTML=''}document.getElementById('tests').addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter')findPackages()});</script></body></html>
